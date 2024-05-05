@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     int clients_sock[2];
     memset(&serv, 0, sizeof(serv));
     serv.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv.sin_port = port;
+    serv.sin_port = htons(port);
     serv.sin_family = AF_INET;
 
     if ((servSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
