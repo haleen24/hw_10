@@ -5,7 +5,7 @@
 #include <csignal>
 
 #define SIZE 255ul
-#define MAXPENDING 5
+#define MAXPENDING 4
 
 void accept_client(int &clSock, int &servSock, struct sockaddr_in *client) {
     socklen_t clientSize = sizeof(*client);
@@ -16,11 +16,10 @@ void accept_client(int &clSock, int &servSock, struct sockaddr_in *client) {
 }
 
 int main(int argc, char **argv) {
-//    if (argc < 2 || argc > 3) {
-//        std::cout << "ARG FORMAT: <SERVER IP> <SERVER PORT>\n";
-//        exit(-1);
-//    }
-//    char *servIp = argv[1];
+   if (argc != 2) {
+       std::cout << "ARG FORMAT: <SERVER PORT> | IP ALWAYS 0.0.0.0\n";
+       exit(-1);
+   }
     unsigned short port = atoi(argv[1]);
     int servSock;
     struct sockaddr_in serv{};
@@ -56,9 +55,18 @@ int main(int argc, char **argv) {
 
     char buff[SIZE];
     for (;;) {
-        recv(servSock, buff, SIZE, 0);
-        msg = buff;
-        send(clients_sock[1], msg.c_str(), msg.length(), 0);
+        long size = recv(servSock, buff, SIZE, 0);
+        if (size == -1) {
+            std::cout << "recv() error\n";
+            exit(-1);
+        }
+        msg = std::string(buff, size);
+        size = send(clients_sock[1], msg.c_str(), msg.length(), 0);
+        if (size < msg.size()) {
+            std::cout << "different number of bytes was sent\n";
+            exit(-1);
+        }
+        std::cout << "SERVER LOG: " << msg << '\n';
         if (msg == "The End") {
             close(servSock);
             exit(0);
