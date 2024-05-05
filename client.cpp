@@ -3,13 +3,11 @@
 #include <arpa/inet.h>
 #include <cstring>
 #include <csignal>
-#include <errno.h>
 
 #define SIZE 255ul
 
 void dataSender(int sock) {
     std::string msg;
-    std::string_view msg_view;
     for (;;) {
         getline(std::cin, msg);
         if (send(sock, msg.c_str(), msg.length(), 0) != std::min(msg.length(), SIZE)) {
@@ -56,16 +54,22 @@ int main(int argc, char **argv) {
 
     if (connect(sock, (struct sockaddr *) &serv, sizeof(serv)) < 0) {
         std::cout << "connection() failed\n";
-        std::cout << errno;
         exit(-1);
     }
     char buff[SIZE + 1];
-    recv(sock, buff, SIZE, 0);
+    long size = recv(sock, buff, SIZE, 0);
+    if (size == -1) {
+        std::cout << "Got unexpected response from server\n";
+        exit(-1);
+    }
     buff[SIZE] = '\0';
     std::string msg = buff;
+    std::cout << "connected...\n";
     if (msg == "1") {
+        std::cout << "You are sender\n";
         dataSender(sock);
     } else if (msg == "2") {
+        std::cout << "You are receiver\n";
         dataReceiver(sock);
     } else {
         std::cout << "Server response error\n";
