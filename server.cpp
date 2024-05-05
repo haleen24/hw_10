@@ -52,10 +52,10 @@ int main(int argc, char **argv) {
     accept_client(clients_sock[1], servSock, &clients[1]);
     msg = "2";
     send(clients_sock[1], msg.c_str(), msg.length(), 0);
-
+    std::cout << "both parths are connected\n";
     char buff[SIZE];
     for (;;) {
-        long size = recv(servSock, buff, SIZE, 0);
+        long size = recv(clients_sock[0], buff, SIZE, 0);
         if (size == -1) {
             std::cout << "recv() error\n";
             exit(-1);
