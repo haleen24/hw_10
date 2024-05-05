@@ -1,4 +1,0 @@
-/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/haleen/clion/clion-2023.1.2/bin/ninja/linux/x64/ninja -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G Ninja -S /home/haleen/trash/OSCourse/hw_10 -B /home/haleen/trash/OSCourse/hw_10/cmake-build-debug
--- Configuring done
--- Generating done
--- Build files have been written to: /home/haleen/trash/OSCourse/hw_10/cmake-build-debug
